@@ -12,7 +12,7 @@ interface SidebarProps {
   setTheme: (t: Theme) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentTheme, setTheme }) => {
+const Sidebar = ({ isOpen, onClose, currentTheme, setTheme }: SidebarProps) => {
 
   const handleExport = () => {
     const data = exportAllData();
@@ -90,19 +90,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentTheme, setThe
               </div>
               {currentTheme === 'Cyber-Dystopian' && <div className="w-2 h-2 bg-green-400 rounded-full"></div>}
             </button>
-            <button
-              onClick={() => setTheme('Solstice')}
-              className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${currentTheme === 'Solstice' ? 'bg-indigo-600/20 border-indigo-500 text-indigo-900' : 'bg-white/5 border-transparent text-white/70 hover:bg-white/10'}`}
-            >
-              <div className="flex items-center gap-3">
-                <Sun size={18} className={currentTheme === 'Solstice' ? "text-indigo-600" : ""} />
-                <div className="text-left">
-                  <p className="font-bold text-sm">Solstice</p>
-                  <p className="text-[10px] opacity-50">Pure & high-contrast light</p>
-                </div>
-              </div>
-              {currentTheme === 'Solstice' && <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>}
-            </button>
           </div>
         </div>
 
@@ -148,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentTheme, setThe
       <div className="mt-auto pt-6 border-t border-white/10 text-center">
         <p className="text-[10px] font-mono text-white/20 tracking-tighter uppercase">Newel Academy OS v2.2.0 • Build 202505</p>
       </div>
-    </div>
+    </div >
   );
 };
 

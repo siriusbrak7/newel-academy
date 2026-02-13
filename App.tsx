@@ -83,21 +83,14 @@ const AppContent: React.FC = () => {
       root.style.setProperty('--primary', '#22c55e'); // green-500
       root.style.setProperty('--secondary', '#15803d'); // green-700
       root.style.setProperty('--bg-main', '#000000');
-      root.style.setProperty('--glass-bg', 'rgba(0, 255, 0, 0.02)');
+      root.style.setProperty('--glass-bg', 'rgba(0, 255, 0, 0.05)');
       body.style.backgroundColor = '#000000';
       body.style.color = '#22c55e';
-      if (stars) stars.style.opacity = '0.2';
-      if (constellations) constellations.style.opacity = '0.1';
+      body.classList.add('theme-matrix');
+      if (stars) stars.style.opacity = '0.1';
+      if (constellations) constellations.style.opacity = '0.05';
     } else {
-      // Solstice (Light/Premium)
-      root.style.setProperty('--primary', '#6366f1'); // indigo-500
-      root.style.setProperty('--secondary', '#ec4899'); // pink-500
-      root.style.setProperty('--bg-main', '#f8fafc');
-      root.style.setProperty('--glass-bg', 'rgba(0, 0, 0, 0.05)');
-      body.style.backgroundColor = '#f8fafc';
-      body.style.color = '#0f172a';
-      if (stars) stars.style.opacity = '0';
-      if (constellations) constellations.style.opacity = '0';
+      body.classList.remove('theme-matrix');
     }
   }, [theme]);
 
