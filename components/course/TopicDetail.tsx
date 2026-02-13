@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import QuizInterface from './QuizInterface';
 import AITutorChat from '../AITutorChat';
 
-const TopicDetail: React.FC<{ user: User }> = ({ user }) => {
+const TopicDetail = ({ user }: { user: User }) => {
     const { subject, topicId } = useParams<{ subject: string; topicId: string }>();
     const navigate = useNavigate();
     const [topic, setTopic] = useState<Topic | null>(null);
@@ -56,6 +56,8 @@ const TopicDetail: React.FC<{ user: User }> = ({ user }) => {
                     onClose={() => setActiveQuiz(null)}
                     isCourseFinal={activeQuiz.isMain}
                     username={user.username}
+                    subject={subject}
+                    topicId={topicId}
                 />
             )}
 
@@ -120,25 +122,54 @@ const TopicDetail: React.FC<{ user: User }> = ({ user }) => {
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <FileText size={20} className="text-purple-400" /> Study Materials
                         </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {topic.materials.length === 0 && <p className="text-white/30 italic text-sm">No materials uploaded yet.</p>}
-                            {topic.materials.map(m => (
-                                <a
-                                    key={m.id}
-                                    href={m.type === 'link' ? m.content : '#'}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="p-4 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 hover:bg-white/10 transition-colors"
-                                >
-                                    <div className="p-2 bg-white/5 rounded-lg">
-                                        {m.type === 'link' ? <Globe size={18} className="text-blue-400" /> : <FileText size={18} className="text-orange-400" />}
-                                    </div>
-                                    <div className="overflow-hidden">
-                                        <p className="text-white font-medium text-sm truncate">{m.title}</p>
-                                        <p className="text-white/30 text-[10px] uppercase font-bold">{m.type}</p>
-                                    </div>
-                                </a>
-                            ))}
+                            {topic.materials.map(m => {
+                                const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+                                const ytMatch = m.type === 'link' ? m.content.match(youtubeRegex) : null;
+                                const ytId = ytMatch ? ytMatch[1] : null;
+
+                                if (ytId) {
+                                    return (
+                                        <div key={m.id} className="col-span-full bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                                            <div className="p-4 bg-white/5 border-b border-white/5 flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Play size={16} className="text-red-500" />
+                                                    <span className="text-sm font-bold text-white">{m.title}</span>
+                                                </div>
+                                                <span className="text-[10px] text-white/30 uppercase font-mono">YouTube Player</span>
+                                            </div>
+                                            <div className="aspect-video relative">
+                                                <iframe
+                                                    src={`https://www.youtube.com/embed/${ytId}`}
+                                                    title={m.title}
+                                                    className="absolute inset-0 w-full h-full"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                ></iframe>
+                                            </div>
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <a
+                                        key={m.id}
+                                        href={m.type === 'link' ? m.content : '#'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-4 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 hover:bg-white/10 transition-colors"
+                                    >
+                                        <div className="p-2 bg-white/5 rounded-lg">
+                                            {m.type === 'link' ? <Globe size={18} className="text-blue-400" /> : <FileText size={18} className="text-orange-400" />}
+                                        </div>
+                                        <div className="overflow-hidden">
+                                            <p className="text-white font-medium text-sm truncate">{m.title}</p>
+                                            <p className="text-white/30 text-[10px] uppercase font-bold">{m.type}</p>
+                                        </div>
+                                    </a>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
