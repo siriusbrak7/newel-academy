@@ -103,7 +103,7 @@ const StudentDashboard: React.FC<{ user: User }> = ({ user }) => {
     };
 
     const features = [
-        { title: "Cambridge Questions", desc: "Practice IGCSE/A-Level style questions.", icon: <Brain className="text-purple-400" size={32} />, color: "from-purple-500/20 to-blue-500/20", link: "/courses" },
+        { title: "Smart Exam Prep", desc: "AI questions from CAIE, IB, and AP papers.", icon: <Brain className="text-purple-400" size={32} />, color: "from-purple-500/20 to-blue-500/20", link: "/exam-prep" },
         { title: "AI Explainer", desc: "Get instant simplifications of complex theories.", icon: <Atom className="text-cyan-400" size={32} />, color: "from-cyan-500/20 to-teal-500/20", link: "/courses" },
         { title: "222 Sprint", desc: "Challenge: Answer as many as you can in 222 seconds.", icon: <Zap className="text-yellow-400" size={32} />, color: "from-yellow-500/20 to-orange-500/20", link: "/challenge" }
     ];

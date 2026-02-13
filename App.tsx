@@ -25,6 +25,7 @@ const SprintChallenge = lazy(() => import('./components/Gamification').then(m =>
 const LeaderboardView = lazy(() => import('./components/Gamification').then(m => ({ default: m.LeaderboardView })));
 const AITutorChat = lazy(() => import('./components/AITutorChat'));
 const VoiceTutor = lazy(() => import('./components/VoiceTutor'));
+const ExamPrep = lazy(() => import('./components/ExamPrep') as Promise<{ default: React.ComponentType<{ user: User }> }>);
 
 const PageLoader: React.FC = () => (
   <div className="flex items-center justify-center py-24">
@@ -211,6 +212,7 @@ const AppContent: React.FC = () => {
               <Route path="/admin" element={<RequireAuth allowedRoles={['admin']}><AdminDashboard /></RequireAuth>} />
               <Route path="/teacher-dashboard" element={<RequireAuth allowedRoles={['teacher']}>{user && <TeacherDashboard user={user} />}</RequireAuth>} />
               <Route path="/student-dashboard" element={<RequireAuth allowedRoles={['student']}>{user && <StudentDashboard user={user} />}</RequireAuth>} />
+              <Route path="/exam-prep" element={<RequireAuth allowedRoles={['student']}>{user && <ExamPrep user={user} />}</RequireAuth>} />
               <Route path="/courses" element={<RequireAuth allowedRoles={['teacher', 'student']}>{user?.role === 'teacher' ? <CourseManager user={user} /> : user && <StudentCourseList user={user} />}</RequireAuth>} />
               <Route path="/courses/:subject/:topicId" element={<RequireAuth allowedRoles={['student']}>{user && <TopicDetail user={user} />}</RequireAuth>} />
               <Route path="/assessments" element={<RequireAuth allowedRoles={['teacher', 'student']}>{user?.role === 'teacher' ? <CustomAssessmentManager user={user} /> : user && <StudentAssessmentList user={user} />}</RequireAuth>} />

@@ -22,6 +22,8 @@ const ASSESSMENTS_DB_KEY = 'newel_assessmentsDb';
 const LEADERBOARD_DB_KEY = 'newel_leaderboardDb';
 const SUBMISSIONS_DB_KEY = 'newel_submissionsDb';
 const ANNOUNCEMENTS_DB_KEY = 'newel_announcementsDb';
+const EXAM_QUESTIONS_KEY = 'newel_examQuestionsDb';
+const EXAM_SESSIONS_KEY = 'newel_examSessionsDb';
 
 // Safe JSON parse with fallback to prevent crashes from corrupted localStorage
 const safeParseJSON = <T>(raw: string | null, fallback: T): T => {
@@ -141,6 +143,42 @@ export const getSubmissions = (): Submission[] => safeParseJSON<Submission[]>(ap
 export const saveSubmission = (sub: Submission) => { const list = getSubmissions(); const idx = list.findIndex(s => s.assessmentId === sub.assessmentId && s.username === sub.username); if (idx >= 0) list[idx] = sub; else list.push(sub); appStorage.setItem(SUBMISSIONS_DB_KEY, JSON.stringify(list)); syncToSupabase(SUBMISSIONS_DB_KEY, list); };
 export const getAnnouncements = (): Announcement[] => safeParseJSON<Announcement[]>(appStorage.getItem(ANNOUNCEMENTS_DB_KEY), []);
 export const saveAnnouncement = (ann: Announcement) => { const list = getAnnouncements(); list.unshift(ann); appStorage.setItem(ANNOUNCEMENTS_DB_KEY, JSON.stringify(list)); syncToSupabase(ANNOUNCEMENTS_DB_KEY, list); };
+
+// --- Exam Prep Storage ---
+export interface ExamSession {
+  id: string;
+  username: string;
+  subject: string;
+  topic: string;
+  gradeLevel: string;
+  count: number;
+  format: string;
+  score: number;
+  timestamp: number;
+  questions: any[];
+}
+
+export const getExamQuestionBank = () => safeParseJSON<any[]>(appStorage.getItem(EXAM_QUESTIONS_KEY), []);
+export const saveExamQuestionsToBank = (newQuestions: any[]) => {
+  const bank = getExamQuestionBank();
+  // Filter out duplicates based on question text
+  const filtered = newQuestions.filter(nq => !bank.some(bq => bq.text === nq.text));
+  const updatedBank = [...bank, ...filtered];
+  appStorage.setItem(EXAM_QUESTIONS_KEY, JSON.stringify(updatedBank));
+  syncToSupabase(EXAM_QUESTIONS_KEY, updatedBank);
+};
+
+export const getExamSessions = (username?: string) => {
+  const all = safeParseJSON<ExamSession[]>(appStorage.getItem(EXAM_SESSIONS_KEY), []);
+  return username ? all.filter(s => s.username === username) : all;
+};
+
+export const saveExamSession = (session: ExamSession) => {
+  const all = getExamSessions();
+  all.unshift(session);
+  appStorage.setItem(EXAM_SESSIONS_KEY, JSON.stringify(all));
+  syncToSupabase(EXAM_SESSIONS_KEY, all);
+};
 
 export const calculateUserStats = (user: User) => {
   const history = user.loginHistory || [];

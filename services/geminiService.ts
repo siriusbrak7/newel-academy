@@ -105,3 +105,52 @@ export const getAITutorStream = async (
   });
 };
 
+export const generateExamQuestions = async (
+  subject: string,
+  topic: string,
+  gradeLevel: string,
+  count: number,
+  format: 'MCQ' | 'THEORY' | 'MIXED'
+): Promise<any[]> => {
+  const prompt = `Generate ${count} ${format} exam questions for ${subject}, Topic: ${topic}, Grade Level: ${gradeLevel}. 
+  Base these questions on accredited curricula like Cambridge (CAIE), International Baccalaureate (IB), and NGSS (AP). 
+  Use the style and depth found in actual past papers. 
+  
+  Format each question as a JSON object with: 
+  - text: The question string
+  - options: Array of 4 strings for MCQs (empty for THEORY)
+  - correctAnswer: The correct choice or a detailed model answer for THEORY
+  - type: 'MCQ' or 'THEORY'
+  - difficulty: Based on grade level (Grade 9-10 = IGCSE, Grade 11-12 = AS/ALEVEL)
+  - topic: the topic provided
+  
+  Ensure questions are scientifically accurate and challenging.`;
+
+  const schema = {
+    type: Type.ARRAY,
+    items: {
+      type: Type.OBJECT,
+      properties: {
+        text: { type: Type.STRING },
+        options: { type: Type.ARRAY, items: { type: Type.STRING } },
+        correctAnswer: { type: Type.STRING },
+        type: { type: Type.STRING, enum: ['MCQ', 'THEORY'] },
+        difficulty: { type: Type.STRING },
+        topic: { type: Type.STRING }
+      },
+      required: ["text", "options", "correctAnswer", "type", "topic"]
+    }
+  };
+
+  try {
+    const response = await getAITutorResponse(prompt, "Exam Prep Generator", {
+      json: true,
+      schema,
+      useSearch: true
+    });
+    return JSON.parse(response);
+  } catch (error) {
+    console.error('[Gemini] Failed to generate exam questions:', error);
+    return [];
+  }
+};
