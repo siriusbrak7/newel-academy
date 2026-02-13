@@ -50,19 +50,37 @@ export const DEMO_USERS: User[] = [
 
 export const QUESTION_BANK: Record<string, Question[]> = {
   'Biology': [
-    { id: 'cb_1', topic: 'Cell Structure', difficulty: 'IGCSE', type: 'MCQ', text: "Which structure is found in plant cells but not animal cells?", options: ["Mitochondria", "Nucleus", "Cell wall", "Cell membrane"], correctAnswer: "Cell wall" },
-    { id: 'cb_2', topic: 'Cell Structure', difficulty: 'IGCSE', type: 'MCQ', text: "What is the function of the nucleus?", options: ["Protein synthesis", "Cellular respiration", "Contains genetic material", "Photosynthesis"], correctAnswer: "Contains genetic material" },
-    { id: 'cb_3', topic: 'Cell Structure', difficulty: 'IGCSE', type: 'MCQ', text: "Which process requires energy from respiration?", options: ["Osmosis", "Diffusion", "Active transport", "All of the above"], correctAnswer: "Active transport" },
-    { id: 'p_i_1', topic: 'General Physics', difficulty: 'IGCSE', type: 'MCQ', text: "Which quantity has both magnitude and direction?", options: ["Speed", "Distance", "Velocity", "Time"], correctAnswer: "Velocity" },
-    { id: 'c_i_1', topic: 'Chemistry', difficulty: 'IGCSE', type: 'MCQ', text: "Subatomic particle positive charge?", options: ["Electron", "Neutron", "Proton", "Photon"], correctAnswer: "Proton" }
+    { id: 'b1', topic: 'Cell Biology', difficulty: 'IGCSE', type: 'MCQ', text: "Which organelle is known as the powerhouse of the cell?", options: ["Nucleus", "Ribosome", "Mitochondrion", "Vacuole"], correctAnswer: "Mitochondrion" },
+    { id: 'b2', topic: 'Cell Biology', difficulty: 'IGCSE', type: 'MCQ', text: "What structure in plant cells performs photosynthesis?", options: ["Cell Wall", "Chloroplast", "Cytoplasm", "Nucleus"], correctAnswer: "Chloroplast" },
+    { id: 'b3', topic: 'Genetics', difficulty: 'IGCSE', type: 'MCQ', text: "What is the molecule that carries genetic information?", options: ["RNA", "DNA", "ATP", "Glucose"], correctAnswer: "DNA" },
+    { id: 'b4', topic: 'Ecology', difficulty: 'IGCSE', type: 'MCQ', text: "What is the primary source of energy for most ecosystems?", options: ["Wind", "Water", "Sunlight", "Geothermal"], correctAnswer: "Sunlight" },
+    { id: 'b5', topic: 'Human Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "Which system is responsible for transporting oxygen throughout the body?", options: ["Nervous", "Excretory", "Circulatory", "Skeletal"], correctAnswer: "Circulatory" },
+    { id: 'b6', topic: 'Human Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "Where does most nutrient absorption occur in the digestive system?", options: ["Stomach", "Large intestine", "Small intestine", "Esophagus"], correctAnswer: "Small intestine" },
+    { id: 'b7', topic: 'Microbiology', difficulty: 'IGCSE', type: 'MCQ', text: "Which of these is a prokaryotic organism?", options: ["Yeast", "Amoeba", "Bacteria", "Mushroom"], correctAnswer: "Bacteria" },
+    { id: 'b8', topic: 'Plant Biology', difficulty: 'IGCSE', type: 'MCQ', text: "What is the function of xylem in plants?", options: ["Sugar transport", "Water transport", "Defense", "Support"], correctAnswer: "Water transport" },
+    { id: 'b9', topic: 'Animal Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "What gas do animals primarily exhale as a waste product of respiration?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correctAnswer: "Carbon Dioxide" }
   ],
   'Physics': [
-    { id: 'p_i_1', topic: 'Physics', difficulty: 'IGCSE', type: 'MCQ', text: "Unit of Force?", options: ["Watt", "Newton", "Joule", "Pascal"], correctAnswer: "Newton" },
-    { id: 'p_as_1', topic: 'Physics', difficulty: 'AS', type: 'MCQ', text: "Area under a velocity-time graph represents?", options: ["Acceleration", "Force", "Displacement", "Jerk"], correctAnswer: "Displacement" }
+    { id: 'p1', topic: 'Mechanics', difficulty: 'IGCSE', type: 'MCQ', text: "What is the SI unit of force?", options: ["Joule", "Pascal", "Newton", "Watt"], correctAnswer: "Newton" },
+    { id: 'p2', topic: 'Mechanics', difficulty: 'IGCSE', type: 'MCQ', text: "Acceleration is defined as the rate of change of...", options: ["Distance", "Velocity", "Mass", "Force"], correctAnswer: "Velocity" },
+    { id: 'p3', topic: 'Electricity', difficulty: 'IGCSE', type: 'MCQ', text: "What is the unit of electrical resistance?", options: ["Volt", "Ampere", "Ohm", "Farad"], correctAnswer: "Ohm" },
+    { id: 'p4', topic: 'Waves', difficulty: 'IGCSE', type: 'MCQ', text: "Light travels as what type of wave?", options: ["Longitudinal", "Transverse", "Mechanical", "Sound"], correctAnswer: "Transverse" },
+    { id: 'p5', topic: 'Thermal Physics', difficulty: 'IGCSE', type: 'MCQ', text: "The process by which heat travels through a vacuum is...", options: ["Conduction", "Convection", "Radiation", "Evaporation"], correctAnswer: "Radiation" },
+    { id: 'p6', topic: 'Atomic Physics', difficulty: 'IGCSE', type: 'MCQ', text: "What particles are found in the nucleus of an atom?", options: ["Electrons only", "Protons and electrons", "Protons and neutrons", "Neutrons and electrons"], correctAnswer: "Protons and neutrons" },
+    { id: 'p7', topic: 'Mechanics', difficulty: 'IGCSE', type: 'MCQ', text: "Work done is equal to force multiplied by...", options: ["Time", "Distance", "Mass", "Acceleration"], correctAnswer: "Distance" },
+    { id: 'p8', topic: 'Waves', difficulty: 'IGCSE', type: 'MCQ', text: "The pitch of a sound depends on its...", options: ["Amplitude", "Velocity", "Frequency", "Wavelength"], correctAnswer: "Frequency" },
+    { id: 'p9', topic: 'Electricity', difficulty: 'IGCSE', type: 'MCQ', text: "Which material is the best electrical conductor?", options: ["Glass", "Copper", "Rubber", "Wood"], correctAnswer: "Copper" }
   ],
   'Chemistry': [
-    { id: 'c_i_1', topic: 'Chemistry', difficulty: 'IGCSE', type: 'MCQ', text: "Formula for Sodium Chloride?", options: ["NaCl2", "Na2Cl", "NaCl", "Na3Cl"], correctAnswer: "NaCl" },
-    { id: 'c_as_1', topic: 'Chemistry', difficulty: 'AS', type: 'MCQ', text: "The oxidation state of Manganese in KMnO4 is?", options: ["+2", "+4", "+6", "+7"], correctAnswer: "+7" }
+    { id: 'c1', topic: 'Atomic Structure', difficulty: 'IGCSE', type: 'MCQ', text: "What is the atomic number of an element based on?", options: ["Number of neutrons", "Number of protons", "Total mass", "Number of shells"], correctAnswer: "Number of protons" },
+    { id: 'c2', topic: 'Periodicity', difficulty: 'IGCSE', type: 'MCQ', text: "Which group in the Periodic Table contains the Noble Gases?", options: ["Group 1", "Group 7", "Group 0", "Group 2"], correctAnswer: "Group 0" },
+    { id: 'c3', topic: 'Bonding', difficulty: 'IGCSE', type: 'MCQ', text: "What type of bond involves sharing of electrons?", options: ["Ionic", "Covalent", "Metallic", "Hydrogen"], correctAnswer: "Covalent" },
+    { id: 'c4', topic: 'Acids and Bases', difficulty: 'IGCSE', type: 'MCQ', text: "What is the pH of a neutral solution?", options: ["0", "1", "7", "14"], correctAnswer: "7" },
+    { id: 'c5', topic: 'Energetics', difficulty: 'IGCSE', type: 'MCQ', text: "A reaction that releases heat to the surroundings is...", options: ["Endothermic", "Exothermic", "Reversible", "Catalytic"], correctAnswer: "Exothermic" },
+    { id: 'c6', topic: 'Organic Chemistry', difficulty: 'IGCSE', type: 'MCQ', text: "What is the general formula for Alkanes?", options: ["CnH2n", "CnH2n-2", "CnH2n+2", "CnHn"], correctAnswer: "CnH2n+2" },
+    { id: 'c7', topic: 'Atomic Structure', difficulty: 'IGCSE', type: 'MCQ', text: "What charge does an electron carry?", options: ["Positive", "Negative", "Neutral", "Double positive"], correctAnswer: "Negative" },
+    { id: 'c8', topic: 'Periodic Table', difficulty: 'IGCSE', type: 'MCQ', text: "Which element is a Liquid at room temperature?", options: ["Iron", "Bromine", "Oxygen", "Carbon"], correctAnswer: "Bromine" },
+    { id: 'c9', topic: 'Kinetics', difficulty: 'IGCSE', type: 'MCQ', text: "A substance that speeds up a reaction without being used up is a...", options: ["Reactant", "Product", "Catalyst", "Solvent"], correctAnswer: "Catalyst" }
   ]
 };
 

@@ -68,22 +68,45 @@ const StudentDashboard: React.FC<{ user: User }> = ({ user }) => {
 
     useEffect(() => {
         const generateAdvice = async () => {
-            // Simple logic for advice
+            const cacheKey = `advice_${user.username}`;
+            const cached = localStorage.getItem(cacheKey);
+            const now = Date.now();
+
+            if (cached) {
+                const { text, expiry } = JSON.parse(cached);
+                if (now < expiry) {
+                    setAdvice(text);
+                    return;
+                }
+            }
+
             if (subjectScores.length === 0) {
                 setAdvice("Start your first course to get personalized AI advice!");
                 return;
             }
+
             const lowestScore = Math.min(...subjectScores);
+            let finalAdvice = "";
+
             if (lowestScore < 60) {
                 const subject = subjectLabels[subjectScores.indexOf(lowestScore)];
-                const text = await getAITutorResponse(`Give 1 short sentence of advice for a student failing ${subject}.`);
-                setAdvice(text);
+                try {
+                    finalAdvice = await getAITutorResponse(`Give 1 short sentence of advice for a student failing ${subject}.`);
+                } catch {
+                    finalAdvice = `Focus on your ${subject} fundamentals to boost your score!`;
+                }
             } else {
-                setAdvice("You are doing great! Try Quantum Velocity to test your scientific speed.");
+                finalAdvice = "You are doing great! Try Quantum Velocity to test your scientific speed.";
             }
+
+            setAdvice(finalAdvice);
+            localStorage.setItem(cacheKey, JSON.stringify({
+                text: finalAdvice,
+                expiry: now + (1000 * 60 * 60 * 24) // 24 hour cache
+            }));
         };
         generateAdvice();
-    }, []);
+    }, [user.username]);
 
     const exportPDF = () => {
         const doc = new jsPDF();

@@ -39,13 +39,27 @@ export const SprintChallenge = ({ user }: { user: User }) => {
   });
 
   const LANS_COUNT = 3;
+  const usedQuestionIds = useRef<string[]>([]);
 
   const getNewQuestion = () => {
-    const subjects = ['Biology', 'Physics'];
+    const subjects = ['Biology', 'Physics', 'Chemistry'];
     const sub = subjects[Math.floor(Math.random() * subjects.length)];
     const pool = QUESTION_BANK[sub] || [];
     if (pool.length === 0) return null;
-    const q = pool[Math.floor(Math.random() * pool.length)];
+
+    // Filter out recently used questions to prevent repeats
+    let available = pool.filter(q => !usedQuestionIds.current.includes(q.id));
+    if (available.length === 0) {
+      usedQuestionIds.current = []; // Reset if we've cycled through all
+      available = pool;
+    }
+
+    const q = available[Math.floor(Math.random() * available.length)];
+
+    // Add to used list (keep last 10)
+    usedQuestionIds.current.push(q.id);
+    if (usedQuestionIds.current.length > 10) usedQuestionIds.current.shift();
+
     setCurrentQuestion(q);
     setOptions([...q.options].sort(() => 0.5 - Math.random()));
     return q;
