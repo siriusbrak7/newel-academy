@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="https://picsum.photos/32/32" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newel Academy • Cosmic AI Science Tutor</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- KaTeX for Science Formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.10.1",
+    "react/jsx-runtime": "https://aistudiocdn.com/react@^19.2.1/jsx-runtime",
+    "react/jsx-dev-runtime": "https://aistudiocdn.com/react@^19.2.1/jsx-dev-runtime",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "chart.js": "https://aistudiocdn.com/chart.js@^4.4.7",
+    "react-chartjs-2": "https://aistudiocdn.com/react-chartjs-2@^5.3.0",
+    "jspdf": "https://aistudiocdn.com/jspdf@^2.5.2",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0",
+    "marked": "https://esm.sh/marked@12.0.0",
+    "dompurify": "https://esm.sh/dompurify@3.0.9"
+  }
+}
+</script>
+  <!-- Polyfill for environments expecting global jsxRuntime -->
+  <script type="module">
+    import * as React from 'react';
+    import * as ReactDOM from 'react-dom/client';
+    import * as jsxRuntime from 'react/jsx-runtime';
+    import * as jsxDevRuntime from 'react/jsx-dev-runtime';
+
+    window.React = React;
+    window.ReactDOM = ReactDOM;
+    window.jsxRuntime = jsxRuntime;
+    window.jsxDevRuntime = jsxDevRuntime;
+  </script>
+  <style>
+    :root {
+      --cosmic-bg: #030712;
+      --plasma-cyan: #22d3ee;
+      --plasma-purple: #a855f7;
+    }
+
+    body {
+      background-color: var(--cosmic-bg);
+      color: white;
+      margin: 0;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Starfield Background */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle at center, #111827 0%, #030712 100%);
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: twinkle var(--duration) infinite ease-in-out;
+    }
+
+    /* Constellation Layer */
+    .constellations {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-image: url('data:image/svg+xml,<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1" fill="white" opacity="0.3"/><circle cx="150" cy="80" r="1" fill="white" opacity="0.3"/><circle cx="300" cy="200" r="1" fill="white" opacity="0.3"/><line x1="50" y1="50" x2="150" y2="80" stroke="white" stroke-width="0.2" opacity="0.2"/><line x1="150" y1="80" x2="300" y2="200" stroke="white" stroke-width="0.2" opacity="0.2"/></svg>');
+      background-size: 800px 800px;
+      opacity: 0.4;
+      animation: rotateSlow 240s linear infinite;
+    }
+
+    @keyframes rotateSlow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-30px) rotate(3deg);
+      }
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    @keyframes plasmaThrust {
+
+      0%,
+      100% {
+        box-shadow: 0 10px 40px -10px var(--plasma-cyan);
+      }
+
+      50% {
+        box-shadow: 0 20px 60px -5px var(--plasma-purple);
+      }
+    }
+
+    .rocket-thrust {
+      animation: plasmaThrust 2s ease-in-out infinite;
+    }
+
+    .animate-float {
+      animation: float 8s ease-in-out infinite;
+    }
+
+    /* Mobile Responsiveness Utility */
+    @media (max-width: 640px) {
+      .hide-on-mobile {
+        display: none !important;
+      }
+
+      h1 {
+        font-size: 3rem !important;
+      }
+
+      .sidebar-width {
+        width: 100% !important;
+      }
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+  </style>
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+  <div class="stars-container" id="stars"></div>
+  <div class="constellations"></div>
+  <div id="root"></div>
+
+  <script>
+    // Generate stars dynamically
+    const stars = document.getElementById('stars');
+    for (let i = 0; i < 200; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 2 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+      stars.appendChild(star);
+    }
+  </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
