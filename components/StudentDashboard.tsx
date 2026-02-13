@@ -79,7 +79,7 @@ const StudentDashboard: React.FC<{ user: User }> = ({ user }) => {
                 const text = await getAITutorResponse(`Give 1 short sentence of advice for a student failing ${subject}.`);
                 setAdvice(text);
             } else {
-                setAdvice("You are doing great! Try the 222-Sprint to test your speed.");
+                setAdvice("You are doing great! Try Quantum Velocity to test your scientific speed.");
             }
         };
         generateAdvice();
@@ -105,7 +105,7 @@ const StudentDashboard: React.FC<{ user: User }> = ({ user }) => {
     const features = [
         { title: "Smart Exam Prep", desc: "AI questions from CAIE, IB, and AP papers.", icon: <Brain className="text-purple-400" size={32} />, color: "from-purple-500/20 to-blue-500/20", link: "/exam-prep" },
         { title: "AI Explainer", desc: "Get instant simplifications of complex theories.", icon: <Atom className="text-cyan-400" size={32} />, color: "from-cyan-500/20 to-teal-500/20", link: "/courses" },
-        { title: "222 Sprint", desc: "Challenge: Answer as many as you can in 222 seconds.", icon: <Zap className="text-yellow-400" size={32} />, color: "from-yellow-500/20 to-orange-500/20", link: "/challenge" }
+        { title: "Quantum Velocity", desc: "High-stakes challenge: Accuracy at terminal speed.", icon: <Zap className="text-yellow-400" size={32} />, color: "from-yellow-500/20 to-orange-500/20", link: "/challenge" }
     ];
 
     return (
@@ -124,7 +124,7 @@ const StudentDashboard: React.FC<{ user: User }> = ({ user }) => {
                     <div className="bg-gradient-to-r from-purple-900/40 to-cyan-900/40 border border-white/10 p-6 rounded-2xl flex gap-4 items-start">
                         <div className="bg-white/10 p-3 rounded-full"><Brain className="text-cyan-300" /></div>
                         <div>
-                            <h4 className="font-bold text-cyan-300 mb-1">AI Advisor</h4>
+                            <h4 className="font-bold text-cyan-300 mb-1">Advisor</h4>
                             <p className="text-white/80 italic">"{advice}"</p>
                         </div>
                     </div>

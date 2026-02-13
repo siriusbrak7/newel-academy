@@ -43,22 +43,31 @@ const safeParseJSON = <T>(raw: string | null, fallback: T): T => {
 
 // Atomic Sync Queue
 const syncQueue: Record<string, boolean> = {};
+let isTableMissing = false;
 const syncToSupabase = async (key: string, data: any) => {
-  if (!isSupabaseConfigured() || !supabase || syncQueue[key]) return;
+  if (!isSupabaseConfigured() || !supabase || syncQueue[key] || isTableMissing) return;
   syncQueue[key] = true;
   try {
-    await supabase.from('app_data').upsert({ key, value: data }, { onConflict: 'key' });
+    const { error } = await supabase.from('app_data').upsert({ key, value: data }, { onConflict: 'key' });
+    if (error && (error.code === '42P01' || error.status === 404)) {
+      isTableMissing = true;
+      console.warn('[Supabase] "app_data" table not found. Sync disabled until table is created (see SUPABASE_SETUP.sql).');
+    }
   } catch (err) {
-    console.warn(`Supabase Sync Failed (${key})`);
+    // Silent catch to prevent UI interruption
   } finally {
     syncQueue[key] = false;
   }
 };
 
 const fetchFromSupabase = async (key: string) => {
-  if (!isSupabaseConfigured() || !supabase) return null;
+  if (!isSupabaseConfigured() || !supabase || isTableMissing) return null;
   try {
-    const { data } = await supabase.from('app_data').select('value').eq('key', key).single();
+    const { data, error } = await supabase.from('app_data').select('value').eq('key', key).single();
+    if (error && (error.code === '42P01' || error.status === 404)) {
+      isTableMissing = true;
+      return null;
+    }
     return data?.value;
   } catch (err) { return null; }
 };
@@ -280,7 +289,7 @@ export const getClassOverview = (): ClassOverview => {
 };
 
 export const getLeaderboards = (): Leaderboards => safeParseJSON<Leaderboards>(appStorage.getItem(LEADERBOARD_DB_KEY), { academic: [], challenge: [], assessments: [] });
-export const saveSprintScore = (username: string, score: number) => {
+export const saveQuantumVelocityScore = (username: string, score: number) => {
   const boards = getLeaderboards();
   boards.challenge.push({ username, score });
   boards.challenge.sort((a: any, b: any) => b.score - a.score);

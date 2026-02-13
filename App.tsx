@@ -21,7 +21,7 @@ const TopicDetail = lazy(() => import('./components/course/TopicDetail') as Prom
 const CourseManager = lazy(() => import('./components/course/CourseManager') as Promise<{ default: React.ComponentType<{ user: User }> }>);
 const CustomAssessmentManager = lazy(() => import('./components/course/CustomAssessmentManager') as Promise<{ default: React.ComponentType<{ user: User }> }>);
 const StudentAssessmentList = lazy(() => import('./components/course/StudentAssessmentList') as Promise<{ default: React.ComponentType<{ user: User }> }>);
-const SprintChallenge = lazy(() => import('./components/Gamification').then(m => ({ default: m.SprintChallenge as React.ComponentType<{ user: User }> })));
+const QuantumVelocityGame = lazy(() => import('./components/Gamification').then(m => ({ default: m.SprintChallenge as React.ComponentType<{ user: User }> })));
 const LeaderboardView = lazy(() => import('./components/Gamification').then(m => ({ default: m.LeaderboardView })));
 const AITutorChat = lazy(() => import('./components/AITutorChat'));
 const VoiceTutor = lazy(() => import('./components/VoiceTutor'));
@@ -218,7 +218,7 @@ const AppContent: React.FC = () => {
               <Route path="/courses/:subject/:topicId" element={<RequireAuth allowedRoles={['student']}>{user && <TopicDetail user={user} />}</RequireAuth>} />
               <Route path="/assessments" element={<RequireAuth allowedRoles={['teacher', 'student']}>{user?.role === 'teacher' ? <CustomAssessmentManager user={user} /> : user && <StudentAssessmentList user={user} />}</RequireAuth>} />
               <Route path="/leaderboard" element={<RequireAuth allowedRoles={['student', 'teacher']}><LeaderboardView /></RequireAuth>} />
-              <Route path="/challenge" element={<RequireAuth allowedRoles={['student']}>{user && <SprintChallenge user={user} />}</RequireAuth>} />
+              <Route path="/challenge" element={<RequireAuth allowedRoles={['student']}>{user && <QuantumVelocityGame user={user} />}</RequireAuth>} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { User, LeaderboardEntry, Question } from '../types';
-import { saveSprintScore, getLeaderboards } from '../services/storageService';
+import { saveQuantumVelocityScore, getLeaderboards } from '../services/storageService';
 import { QUESTION_BANK } from '../constants';
 import { Trophy, Zap, Target, Play, RotateCcw, ArrowLeft, Heart, Star } from 'lucide-react';
 import Confetti from './Confetti';
@@ -209,7 +209,7 @@ export const SprintChallenge = ({ user }: { user: User }) => {
               const newLives = prev - 1;
               if (newLives <= 0) {
                 setGameState('gameOver');
-                saveSprintScore(user.username, score);
+                saveQuantumVelocityScore(user.username, score);
               }
               return newLives;
             });
