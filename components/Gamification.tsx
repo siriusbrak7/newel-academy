@@ -1,173 +1,327 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, LeaderboardEntry, Question } from '../types';
-import { getLeaderboards, saveSprintScore } from '../services/storageService';
+import { saveSprintScore, getLeaderboards } from '../services/storageService';
 import { QUESTION_BANK } from '../constants';
-import { Trophy, Timer, Zap, Target } from 'lucide-react';
+import { Trophy, Zap, Target, Play, RotateCcw, ArrowLeft, Heart, Star } from 'lucide-react';
 import Confetti from './Confetti';
 
-// --- SPRINT CHALLENGE (222 Seconds) ---
-export const SprintChallenge: React.FC<{ user: User }> = ({ user }) => {
-  const [active, setActive] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(222);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+// --- COSMIC SCIENCE RUNNER GAME ---
+export const SprintChallenge = ({ user }: { user: User }) => {
+  const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver'>('menu');
   const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [streak, setStreak] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [lives, setLives] = useState(3);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [options, setOptions] = useState<string[]>([]);
+  const [multiplier, setMultiplier] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Initialize Game
-  const startGame = () => {
-    // 1. Get All Physics & Chemistry Questions
-    const physQs = QUESTION_BANK['Physics'] || [];
-    const chemQs = QUESTION_BANK['Chemistry'] || [];
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gameRef = useRef<{
+    playerX: number;
+    targetX: number;
+    lane: number;
+    obstacles: any[];
+    stars: any[];
+    frame: number;
+    speed: number;
+    questionTimer: number;
+  }>({
+    playerX: 1, // 0, 1, 2 for lanes
+    targetX: 1,
+    lane: 1,
+    obstacles: [],
+    stars: [],
+    frame: 0,
+    speed: 5,
+    questionTimer: 0
+  });
 
-    // 2. Get 70 Random Biology Questions
-    const bioQs = QUESTION_BANK['Biology'] || [];
-    const shuffledBio = [...bioQs].sort(() => 0.5 - Math.random());
-    const selectedBio = shuffledBio.slice(0, 70);
+  const LANS_COUNT = 3;
 
-    // 3. Combine
-    const combinedPool = [...physQs, ...chemQs, ...selectedBio];
+  const getNewQuestion = () => {
+    const subjects = ['Biology', 'Physics'];
+    const sub = subjects[Math.floor(Math.random() * subjects.length)];
+    const pool = QUESTION_BANK[sub] || [];
+    if (pool.length === 0) return null;
+    const q = pool[Math.floor(Math.random() * pool.length)];
+    setCurrentQuestion(q);
+    setOptions([...q.options].sort(() => 0.5 - Math.random()));
+    return q;
+  };
 
-    // 4. Shuffle Final Pool
-    const finalShuffled = [...combinedPool].sort(() => 0.5 - Math.random());
-
-    if (finalShuffled.length === 0) {
-      alert("Question bank is empty. Please contact admin.");
-      return;
-    }
-
-    setQuestions(finalShuffled);
-    setTimeLeft(222);
+  const initGame = () => {
     setScore(0);
-    setCurrentIndex(0);
-    setStreak(0);
-    setGameOver(false);
-    setActive(true);
-    setShowConfetti(false);
+    setLives(3);
+    setMultiplier(1);
+    setGameState('playing');
+    getNewQuestion();
+
+    // Create initial stars
+    const stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * 400,
+        y: Math.random() * 600,
+        size: Math.random() * 2,
+        speed: Math.random() * 2 + 1
+      });
+    }
+    gameRef.current.stars = stars;
+    gameRef.current.obstacles = [];
+    gameRef.current.playerX = 1;
+    gameRef.current.targetX = 1;
+    gameRef.current.lane = 1;
+    gameRef.current.speed = 5;
+  };
+
+  const handleInput = (e: KeyboardEvent) => {
+    if (gameState !== 'playing') return;
+    if (e.key === 'ArrowLeft') {
+      gameRef.current.lane = Math.max(0, gameRef.current.lane - 1);
+    } else if (e.key === 'ArrowRight') {
+      gameRef.current.lane = Math.min(2, gameRef.current.lane + 1);
+    }
   };
 
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
-    if (active && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft(prev => prev - 1);
-      }, 1000);
-    } else if (timeLeft === 0 && active) {
-      endGame();
-    }
-    return () => clearInterval(timer);
-  }, [active, timeLeft]);
+    window.addEventListener('keydown', handleInput);
+    return () => window.removeEventListener('keydown', handleInput);
+  }, [gameState]);
 
-  const endGame = () => {
-    setActive(false);
-    setGameOver(true);
-    saveSprintScore(user.username, score);
-    if (score > 50) setShowConfetti(true);
-  };
+  useEffect(() => {
+    if (gameState !== 'playing') return;
 
-  const handleAnswer = (option: string) => {
-    const q = questions[currentIndex];
-    if (option === q.correctAnswer) {
-      const points = 10 + (streak * 2); // Streak bonus
-      setScore(prev => prev + points);
-      setStreak(prev => prev + 1);
-    } else {
-      setScore(prev => Math.max(0, prev - 5)); // Penalty
-      setStreak(0);
-    }
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-    } else {
-      endGame(); // Ran out of questions
-    }
-  };
+    let animationFrameId: number;
 
-  if (!active && !gameOver) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white/5 border border-white/10 rounded-3xl text-center space-y-6 max-w-2xl mx-auto">
-        <Zap size={64} className="text-yellow-400 animate-pulse" />
-        <h2 className="text-4xl font-bold text-white">222-Second Sprint</h2>
-        <p className="text-white/60 max-w-md">
-          Answer as many questions as you can in 3 minutes and 42 seconds.
-          <br />+10 points for correct, -5 for wrong. Streak bonuses apply!
-        </p>
-        <button
-          onClick={startGame}
-          className="bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-400 hover:to-orange-500 text-black font-bold text-xl px-12 py-4 rounded-full shadow-lg transform hover:scale-105 transition-all"
-        >
-          Start Sprint
-        </button>
-      </div>
-    );
-  }
+    const render = () => {
+      const g = gameRef.current;
+      g.frame++;
 
-  if (gameOver) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white/5 border border-white/10 rounded-3xl text-center space-y-6">
-        {showConfetti && <Confetti />}
-        <Trophy size={64} className="text-yellow-400" />
-        <h2 className="text-4xl font-bold text-white">Sprint Complete!</h2>
-        <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">
-          {score} <span className="text-2xl text-white/40">pts</span>
-        </div>
-        <p className="text-white/60">Your score has been added to the leaderboard.</p>
-        <button
-          onClick={() => setGameOver(false)}
-          className="bg-white/10 hover:bg-white/20 text-white font-bold px-8 py-3 rounded-lg transition-colors"
-        >
-          Play Again
-        </button>
-      </div>
-    );
-  }
+      // Clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const currentQ = questions[currentIndex];
+      // Draw Stars
+      ctx.fillStyle = 'white';
+      g.stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+        s.y += s.speed;
+        if (s.y > canvas.height) s.y = 0;
+      });
+
+      // Update Player Position (Smooth move)
+      const targetX = (canvas.width / LANS_COUNT) * g.lane + (canvas.width / LANS_COUNT / 2);
+      g.playerX += (targetX - g.playerX) * 0.2;
+
+      // Draw Player Ship
+      ctx.save();
+      ctx.translate(g.playerX, canvas.height - 80);
+
+      // Ship Glow
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
+      gradient.addColorStop(0, 'rgba(34, 211, 238, 0.4)');
+      gradient.addColorStop(1, 'rgba(34, 211, 238, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(0, 0, 30, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ship Body
+      ctx.fillStyle = '#22d3ee';
+      ctx.beginPath();
+      ctx.moveTo(0, -25);
+      ctx.lineTo(15, 10);
+      ctx.lineTo(-15, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      // Ship Engine
+      ctx.fillStyle = '#a855f7';
+      ctx.beginPath();
+      ctx.moveTo(-8, 10);
+      ctx.lineTo(8, 10);
+      ctx.lineTo(0, 15 + Math.sin(g.frame * 0.5) * 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      // Spawn/Update Obstacles
+      if (g.frame % 100 === 0 && currentQuestion) {
+        // Only spawn if we don't have active answer orbs
+        if (!g.obstacles.some(o => o.type === 'answer')) {
+          const shuffledOptions = [...options];
+          for (let i = 0; i < 3; i++) {
+            g.obstacles.push({
+              x: (canvas.width / 3) * i + (canvas.width / 6),
+              y: -50,
+              type: 'answer',
+              text: shuffledOptions[i],
+              lane: i,
+              color: i === 0 ? '#06b6d4' : i === 1 ? '#a855f7' : '#ec4899'
+            });
+          }
+        }
+      }
+
+      // Draw & Update Obstacles
+      g.obstacles.forEach((o, index) => {
+        o.y += g.speed;
+
+        // Draw Orb
+        ctx.save();
+        ctx.translate(o.x, o.y);
+
+        const orbGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 25);
+        orbGrad.addColorStop(0, o.color);
+        orbGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = orbGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, 25, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 10px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText(o.text.substring(0, 20), 0, 5);
+        ctx.restore();
+
+        // Collision Check
+        if (Math.abs(o.y - (canvas.height - 80)) < 30 && g.lane === o.lane) {
+          if (o.text === currentQuestion?.correctAnswer) {
+            setScore(prev => {
+              const newScore = prev + (10 * multiplier);
+              if (newScore > highScore) setHighScore(newScore);
+              return newScore;
+            });
+            setMultiplier(prev => Math.min(prev + 0.5, 5));
+            g.speed += 0.1;
+            getNewQuestion();
+          } else {
+            setLives(prev => {
+              const newLives = prev - 1;
+              if (newLives <= 0) {
+                setGameState('gameOver');
+                saveSprintScore(user.username, score);
+              }
+              return newLives;
+            });
+            setMultiplier(1);
+            getNewQuestion();
+          }
+          g.obstacles = []; // Clear current wave
+        }
+
+        // Remove offscreen
+        if (o.y > canvas.height + 50) {
+          g.obstacles.splice(index, 1);
+          if (g.obstacles.length === 0) getNewQuestion(); // Missed all
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [gameState, currentQuestion, options]);
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3 bg-black/30 px-4 py-2 rounded-lg border border-white/10">
-          <Timer className="text-cyan-400" />
-          <span className={`text-2xl font-mono font-bold ${timeLeft < 60 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
-            {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          {streak > 1 && <div className="text-yellow-400 font-bold italic animate-bounce">{streak}x Streak!</div>}
-          <div className="text-2xl font-bold text-white">Score: {score}</div>
-        </div>
+    <div className="max-w-4xl mx-auto flex flex-col items-center">
+      <div className="text-center mb-8">
+        <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
+          Cosmic Science Runner
+        </h2>
+        <p className="text-white/40 text-sm">Steer using Left & Right arrows. Collect the correct scientific concepts!</p>
       </div>
 
-      <div className="bg-slate-900/50 backdrop-blur-xl border border-white/20 p-8 rounded-2xl relative overflow-hidden">
-        <div className="absolute top-0 left-0 h-1 bg-cyan-500 transition-all duration-300" style={{ width: `${((222 - timeLeft) / 222) * 100}%` }}></div>
-
-        <div className="flex justify-between items-center mb-6 text-sm text-white/40 uppercase tracking-widest">
-          <span>{currentQ.topic}</span>
-          <span>{currentQ.difficulty}</span>
-        </div>
-
-        <h3 className="text-2xl font-bold text-white mb-8">{currentQ.text}</h3>
-
-        <div className="grid gap-4">
-          {currentQ.options.map((opt, i) => (
+      <div className="relative w-full max-w-[400px] h-[600px] bg-black/40 border border-white/10 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md">
+        {gameState === 'menu' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-black/60 z-20">
+            <RocketLauncher className="text-cyan-400 mb-6 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]" size={80} />
             <button
-              key={i}
-              onClick={() => handleAnswer(opt)}
-              className="w-full text-left p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-cyan-500/20 hover:border-cyan-400 text-white transition-all group"
+              onClick={initGame}
+              className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-xl px-12 py-4 rounded-full shadow-lg transform active:scale-95 transition-all flex items-center gap-3"
             >
-              <span className="inline-block w-8 font-bold opacity-30 group-hover:opacity-100">{String.fromCharCode(65 + i)}</span>
-              {opt}
+              <Play size={24} /> Launch Mission
             </button>
-          ))}
-        </div>
+            <div className="mt-8 text-white/40 text-xs text-center space-y-2">
+              <p>Correct answer = Speed boost & points</p>
+              <p>Wrong answer = Lose a life</p>
+              <p>Avoid collisions with false data</p>
+            </div>
+          </div>
+        )}
+
+        {gameState === 'gameOver' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-black/80 z-20">
+            {showConfetti && <Confetti />}
+            <Trophy size={64} className="text-yellow-400 mb-4" />
+            <h3 className="text-3xl font-bold text-white">Mission Over</h3>
+            <div className="text-5xl font-black text-cyan-400 my-4">{score}</div>
+            <p className="text-white/40 mb-8 uppercase tracking-widest font-bold">Points Secured</p>
+            <button
+              onClick={initGame}
+              className="bg-white text-black font-bold px-10 py-3 rounded-xl flex items-center gap-2 hover:bg-cyan-100 transition-colors"
+            >
+              <RotateCcw size={18} /> New Launch
+            </button>
+          </div>
+        )}
+
+        <canvas
+          ref={canvasRef}
+          width={400}
+          height={600}
+          className="w-full h-full block"
+        />
+
+        {gameState === 'playing' && (
+          <div className="absolute top-0 left-0 w-full p-4 pointer-events-none">
+            <div className="flex justify-between items-start">
+              <div className="flex gap-2">
+                {[...Array(3)].map((_, i) => (
+                  <Heart
+                    key={i}
+                    size={20}
+                    className={i < lives ? "text-red-500 fill-red-500" : "text-white/10"}
+                  />
+                ))}
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-black text-white">{score}</div>
+                <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-tighter">Multiplier: {multiplier.toFixed(1)}x</div>
+              </div>
+            </div>
+
+            {currentQuestion && (
+              <div className="absolute top-1/4 left-4 right-4 bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-xl text-center">
+                <span className="text-[10px] text-white/30 uppercase font-bold tracking-widest">Question Incoming</span>
+                <p className="text-white text-sm font-medium mt-1 leading-tight">{currentQuestion.text}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+const RocketLauncher = ({ size, className }: { size: number, className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+    <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3" />
+    <path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5" />
+  </svg>
+);
 
 // --- LEADERBOARDS ---
 export const LeaderboardView: React.FC = () => {
@@ -231,8 +385,8 @@ export const LeaderboardView: React.FC = () => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${activeTab === tab.id
-                ? 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg scale-105'
-                : 'bg-white/5 text-white/60 hover:bg-white/10'
+              ? 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg scale-105'
+              : 'bg-white/5 text-white/60 hover:bg-white/10'
               }`}
           >
             {tab.icon} {tab.label}

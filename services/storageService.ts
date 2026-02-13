@@ -88,7 +88,7 @@ export const initStorage = async () => {
     const defaultCourses = {
       'Biology': {
         'Cell Structure': {
-          id: 'Cell Structure',
+          id: 'cell_structure',
           title: 'Cell Structure & Function',
           gradeLevel: '9',
           description: 'The fundamental building blocks of life.',
@@ -96,8 +96,16 @@ export const initStorage = async () => {
           materials: []
         }
       },
-      'Physics': {},
-      'Chemistry': {}
+      'Physics': {
+        'Kinematics': {
+          id: 'kinematics',
+          title: 'Motion & Forces',
+          gradeLevel: '9',
+          description: 'Understanding movement, velocity, and acceleration.',
+          subtopics: ['Speed & Velocity', 'Acceleration', 'Newtons Laws'],
+          materials: []
+        }
+      }
     };
     appStorage.setItem(COURSES_DB_KEY, JSON.stringify(defaultCourses));
     syncToSupabase(COURSES_DB_KEY, defaultCourses);
