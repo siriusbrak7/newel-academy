@@ -62,6 +62,44 @@ const AppContent: React.FC = () => {
     document.title = "Newel Academy • Ace Scientific Concepts with Your Personal AI Tutor";
   }, []);
 
+  // Theme variable injection
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const stars = document.getElementById('stars');
+    const constellations = document.querySelector('.constellations') as HTMLElement;
+
+    if (theme === 'Cosmic') {
+      root.style.setProperty('--primary', '#22d3ee'); // cyan-400
+      root.style.setProperty('--secondary', '#a855f7'); // purple-500
+      root.style.setProperty('--bg-main', '#030712');
+      root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.03)');
+      body.style.backgroundColor = '#030712';
+      body.style.color = '#ffffff';
+      if (stars) stars.style.opacity = '1';
+      if (constellations) constellations.style.opacity = '0.4';
+    } else if (theme === 'Cyber-Dystopian') {
+      root.style.setProperty('--primary', '#22c55e'); // green-500
+      root.style.setProperty('--secondary', '#15803d'); // green-700
+      root.style.setProperty('--bg-main', '#000000');
+      root.style.setProperty('--glass-bg', 'rgba(0, 255, 0, 0.02)');
+      body.style.backgroundColor = '#000000';
+      body.style.color = '#22c55e';
+      if (stars) stars.style.opacity = '0.2';
+      if (constellations) constellations.style.opacity = '0.1';
+    } else {
+      // Solstice (Light/Premium)
+      root.style.setProperty('--primary', '#6366f1'); // indigo-500
+      root.style.setProperty('--secondary', '#ec4899'); // pink-500
+      root.style.setProperty('--bg-main', '#f8fafc');
+      root.style.setProperty('--glass-bg', 'rgba(0, 0, 0, 0.05)');
+      body.style.backgroundColor = '#f8fafc';
+      body.style.color = '#0f172a';
+      if (stars) stars.style.opacity = '0';
+      if (constellations) constellations.style.opacity = '0';
+    }
+  }, [theme]);
+
   if (isInitializing) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">

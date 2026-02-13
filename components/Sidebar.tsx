@@ -2,7 +2,7 @@
 import React from 'react';
 import { Theme } from '../types';
 // Added missing Settings icon import
-import { X, Moon, Monitor, Download, Upload, ShieldCheck, Database, Settings } from 'lucide-react';
+import { X, Moon, Monitor, Download, Upload, ShieldCheck, Database, Settings, Sun, Sparkles } from 'lucide-react';
 import { exportAllData, importAllData } from '../services/storageService';
 
 interface SidebarProps {
@@ -69,8 +69,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentTheme, setThe
               className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${currentTheme === 'Cosmic' ? 'bg-cyan-600/20 border-cyan-500 text-white shadow-lg shadow-cyan-900/20' : 'bg-white/5 border-transparent text-white/70 hover:bg-white/10'}`}
             >
               <div className="flex items-center gap-3">
-                <Moon size={18} />
-                <span>Cosmic (Dark)</span>
+                <Moon size={18} className={currentTheme === 'Cosmic' ? "text-cyan-400" : ""} />
+                <div className="text-left">
+                  <p className="font-bold text-sm">Cosmic</p>
+                  <p className="text-[10px] opacity-50">Deep space & nebulae</p>
+                </div>
               </div>
               {currentTheme === 'Cosmic' && <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>}
             </button>
@@ -79,10 +82,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentTheme, setThe
               className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${currentTheme === 'Cyber-Dystopian' ? 'bg-green-600/20 border-green-500 text-green-400 font-mono' : 'bg-white/5 border-transparent text-white/70 hover:bg-white/10'}`}
             >
               <div className="flex items-center gap-3">
-                <Monitor size={18} />
-                <span>Cyber (Matrix)</span>
+                <Monitor size={18} className={currentTheme === 'Cyber-Dystopian' ? "text-green-500" : ""} />
+                <div className="text-left">
+                  <p className="font-bold text-sm">Matrix</p>
+                  <p className="text-[10px] opacity-50">Digital hacker aesthetic</p>
+                </div>
               </div>
               {currentTheme === 'Cyber-Dystopian' && <div className="w-2 h-2 bg-green-400 rounded-full"></div>}
+            </button>
+            <button
+              onClick={() => setTheme('Solstice')}
+              className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border ${currentTheme === 'Solstice' ? 'bg-indigo-600/20 border-indigo-500 text-indigo-900' : 'bg-white/5 border-transparent text-white/70 hover:bg-white/10'}`}
+            >
+              <div className="flex items-center gap-3">
+                <Sun size={18} className={currentTheme === 'Solstice' ? "text-indigo-600" : ""} />
+                <div className="text-left">
+                  <p className="font-bold text-sm">Solstice</p>
+                  <p className="text-[10px] opacity-50">Pure & high-contrast light</p>
+                </div>
+              </div>
+              {currentTheme === 'Solstice' && <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>}
             </button>
           </div>
         </div>

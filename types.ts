@@ -1,6 +1,6 @@
 
 export type Role = 'admin' | 'teacher' | 'student';
-export type Theme = 'Cosmic' | 'Cyber-Dystopian';
+export type Theme = 'Cosmic' | 'Cyber-Dystopian' | 'Solstice';
 
 export interface User {
   username: string;
