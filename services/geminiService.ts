@@ -148,6 +148,13 @@ export const generateExamQuestions = async (
       schema,
       useSearch: true
     });
+
+    // Handle non-JSON responses from error handlers
+    if (!response.trim().startsWith('[') && !response.trim().startsWith('{')) {
+      console.warn('[Gemini] Model returned non-JSON text:', response);
+      return [];
+    }
+
     return JSON.parse(response);
   } catch (error) {
     console.error('[Gemini] Failed to generate exam questions:', error);

@@ -7,7 +7,7 @@ import AuthModal from './components/AuthModal';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ProgressProvider } from './contexts/ProgressContext';
-import { initStorage } from './services/storageService';
+import { initStorage, getNotifications } from './services/storageService';
 import { Theme, User } from './types';
 import { DEFAULT_THEME } from './constants';
 import { Rocket, Sparkles, Globe, Zap, ArrowRight, Star, Loader2 } from 'lucide-react';
@@ -48,6 +48,14 @@ const AppContent: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      const notifs = getNotifications(user.username);
+      setUnreadCount(notifs.filter(n => !n.read).length);
+    }
+  }, [user]);
 
   useEffect(() => {
     const init = async () => {
@@ -109,7 +117,7 @@ const AppContent: React.FC = () => {
         user={user}
         onLogout={logout}
         toggleSidebar={() => setSidebarOpen(true)}
-        notifications={2}
+        notifications={unreadCount}
         onOpenAuth={() => setShowAuthModal(true)}
       />
 
@@ -174,7 +182,7 @@ const AppContent: React.FC = () => {
                       </h1>
 
                       <p className="text-lg md:text-xl lg:text-2xl font-light text-white/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                        Personalized AI mentorship for <span className="text-white font-bold">Physics, Chemistry, and Biology</span>. Master your curriculum through a cosmic learning experience.
+                        Personalized Learning Experience for Students to Master <span className="text-white font-bold">Physics, Chemistry, and Biology</span>. Master your curriculum through a cosmic learning experience.
                       </p>
 
                       <div className="flex flex-col sm:flex-row items-center gap-5 justify-center lg:justify-start pt-6">

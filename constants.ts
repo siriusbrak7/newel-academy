@@ -9,6 +9,26 @@ export const SECURITY_QUESTIONS = [
   "What is the name of your favorite childhood teacher?"
 ];
 
+export const EXAM_TOPICS = {
+  'Biology': [
+    'Cell Biology', 'Molecular Biology', 'Genetics', 'Ecology',
+    'Evolution & Biodiversity', 'Human Physiology', 'Nucleic Acids',
+    'Metabolism', 'Plant Biology', 'Microbiology', 'Animal Physiology'
+  ],
+  'Physics': [
+    'Measurements & Uncertainties', 'Mechanics', 'Thermal Physics',
+    'Waves', 'Electricity & Magnetism', 'Circular Motion & Gravitation',
+    'Atomic, Nuclear & Particle Physics', 'Energy Production', 'Fields',
+    'Electromagnetic Induction', 'Quantum Physics', 'Space Physics'
+  ],
+  'Chemistry': [
+    'Stoichiometric Relationships', 'Atomic Structure', 'Periodicity',
+    'Chemical Bonding & Structure', 'Energetics / Thermochemistry',
+    'Chemical Kinetics', 'Equilibrium', 'Acids & Bases', 'Redox Processes',
+    'Organic Chemistry', 'Measurement & Analysis', 'Environmental Chemistry'
+  ]
+};
+
 export const DEFAULT_THEME = 'Cosmic';
 
 // Only keep the master admin. Removed demo_teacher and demo_student.
@@ -17,7 +37,7 @@ export const DEMO_USERS: User[] = [
   {
     username: 'admin',
     // This is the hashed version of 'Cosmic2025!' used by the AuthModal
-    password: '72e5050212002717019253507d9b972e2759e51c88191266e778732f79038753', 
+    password: '72e5050212002717019253507d9b972e2759e51c88191266e778732f79038753',
     role: 'admin',
     approved: true,
     securityQuestion: SECURITY_QUESTIONS[4],

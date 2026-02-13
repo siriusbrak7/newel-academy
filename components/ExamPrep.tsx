@@ -5,6 +5,7 @@ import { generateExamQuestions } from '../services/geminiService';
 import { saveExamQuestionsToBank, saveExamSession, getExamQuestionBank } from '../services/storageService';
 import { Rocket, Brain, Target, List, ChevronRight, Loader2, CheckCircle, AlertCircle, TrendingUp, Search } from 'lucide-react';
 import { QuizInterface } from './course/QuizInterface';
+import { EXAM_TOPICS } from '../constants';
 
 interface ExamPrepProps {
     user: User;
@@ -13,8 +14,8 @@ interface ExamPrepProps {
 const ExamPrep = ({ user }: { user: User }) => {
     const [step, setStep] = useState<'config' | 'loading' | 'quiz' | 'results'>('config');
     const [config, setConfig] = useState({
-        subject: 'Physics',
-        topic: '',
+        subject: 'Physics' as keyof typeof EXAM_TOPICS,
+        topic: EXAM_TOPICS['Physics'][0],
         format: 'MCQ' as 'MCQ' | 'THEORY' | 'MIXED',
         count: 10
     });
@@ -22,12 +23,19 @@ const ExamPrep = ({ user }: { user: User }) => {
     const [score, setScore] = useState(0);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    const subjects = ['Physics', 'Chemistry', 'Biology'];
+    const subjects = Object.keys(EXAM_TOPICS) as (keyof typeof EXAM_TOPICS)[];
     const formats = [
         { id: 'MCQ', label: 'Multiple Choice', icon: <List size={18} /> },
         { id: 'THEORY', label: 'Theory / Written', icon: <Brain size={18} /> },
         { id: 'MIXED', label: 'Mixed Hybrid', icon: <TrendingUp size={18} /> }
     ];
+
+    // Reset topic when subject changes
+    useEffect(() => {
+        if (!EXAM_TOPICS[config.subject].includes(config.topic)) {
+            setConfig(prev => ({ ...prev, topic: EXAM_TOPICS[config.subject][0] }));
+        }
+    }, [config.subject]);
 
     const generateQuestions = async () => {
         if (!config.topic) return;
@@ -197,20 +205,25 @@ const ExamPrep = ({ user }: { user: User }) => {
                         </div>
                     </div>
 
-                    {/* Topic Search */}
+                    {/* Topic Select */}
                     <div className="space-y-4">
                         <label className="text-white/40 text-sm uppercase tracking-widest font-bold">2. What topic are you revising?</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-white/20 group-focus-within:text-cyan-400 transition-colors">
                                 <Search size={22} />
                             </div>
-                            <input
-                                type="text"
-                                placeholder="e.g. Quantum Mechanics, Genetics, Organic Chemistry..."
+                            <select
                                 value={config.topic}
                                 onChange={(e) => setConfig({ ...config, topic: e.target.value })}
-                                className="w-full bg-slate-900/80 border-2 border-white/5 rounded-2xl py-6 pl-14 pr-6 text-xl text-white placeholder:text-white/10 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all shadow-inner"
-                            />
+                                className="w-full bg-slate-900/80 border-2 border-white/5 rounded-2xl py-6 pl-14 pr-6 text-xl text-white appearance-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all shadow-inner cursor-pointer"
+                            >
+                                {EXAM_TOPICS[config.subject].map(t => (
+                                    <option key={t} value={t} className="bg-slate-900 text-white">{t}</option>
+                                ))}
+                            </select>
+                            <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-white/20">
+                                <ChevronRight size={22} className="rotate-90" />
+                            </div>
                         </div>
                     </div>
 

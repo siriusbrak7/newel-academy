@@ -24,6 +24,7 @@ const SUBMISSIONS_DB_KEY = 'newel_submissionsDb';
 const ANNOUNCEMENTS_DB_KEY = 'newel_announcementsDb';
 const EXAM_QUESTIONS_KEY = 'newel_examQuestionsDb';
 const EXAM_SESSIONS_KEY = 'newel_examSessionsDb';
+const NOTIFICATIONS_KEY = 'newel_notificationsDb';
 
 // Safe JSON parse with fallback to prevent crashes from corrupted localStorage
 const safeParseJSON = <T>(raw: string | null, fallback: T): T => {
@@ -134,15 +135,46 @@ export const updateTopicProgress = (username: string, subject: string, topicId: 
   if (!allProgress[username][subject]) allProgress[username][subject] = {};
   const current = allProgress[username][subject][topicId] || { subtopics: {}, checkpointScores: {}, mainAssessmentPassed: false };
   allProgress[username][subject][topicId] = { ...current, ...updates, subtopics: { ...current.subtopics, ...(updates.subtopics || {}) }, checkpointScores: { ...current.checkpointScores, ...(updates.checkpointScores || {}) }, lastAccessed: Date.now() };
+  if (updates.mainAssessmentPassed) {
+    addNotification('admin', 'Topic Completed', `${username} has completed the topic: ${topicId} in ${subject}!`, 'success');
+  }
   appStorage.setItem(PROGRESS_DB_KEY, JSON.stringify(allProgress)); syncToSupabase(PROGRESS_DB_KEY, allProgress);
 };
 
 export const getAssessments = (): Assessment[] => safeParseJSON<Assessment[]>(appStorage.getItem(ASSESSMENTS_DB_KEY), []);
-export const saveAssessment = (assessment: Assessment) => { const list = getAssessments(); const idx = list.findIndex(a => a.id === assessment.id); if (idx >= 0) list[idx] = assessment; else list.push(assessment); appStorage.setItem(ASSESSMENTS_DB_KEY, JSON.stringify(list)); syncToSupabase(ASSESSMENTS_DB_KEY, list); };
+export const saveAssessment = (assessment: Assessment) => {
+  const list = getAssessments();
+  const idx = list.findIndex(a => a.id === assessment.id);
+  if (idx >= 0) list[idx] = assessment;
+  else {
+    list.push(assessment);
+    // Notify students
+    addNotification('all', 'New Assessment', `A new assessment "${assessment.title}" has been uploaded. Check it out!`, 'info');
+  }
+  appStorage.setItem(ASSESSMENTS_DB_KEY, JSON.stringify(list));
+  syncToSupabase(ASSESSMENTS_DB_KEY, list);
+};
 export const getSubmissions = (): Submission[] => safeParseJSON<Submission[]>(appStorage.getItem(SUBMISSIONS_DB_KEY), []);
-export const saveSubmission = (sub: Submission) => { const list = getSubmissions(); const idx = list.findIndex(s => s.assessmentId === sub.assessmentId && s.username === sub.username); if (idx >= 0) list[idx] = sub; else list.push(sub); appStorage.setItem(SUBMISSIONS_DB_KEY, JSON.stringify(list)); syncToSupabase(SUBMISSIONS_DB_KEY, list); };
+export const saveSubmission = (sub: Submission) => {
+  const list = getSubmissions();
+  const idx = list.findIndex(s => s.assessmentId === sub.assessmentId && s.username === sub.username);
+  if (idx >= 0) list[idx] = sub;
+  else {
+    list.push(sub);
+    // Notify admin/teachers (for now 'admin' as a proxy for all teachers)
+    addNotification('admin', 'Student Submission', `${sub.username} submitted an assessment.`, 'success');
+  }
+  appStorage.setItem(SUBMISSIONS_DB_KEY, JSON.stringify(list));
+  syncToSupabase(SUBMISSIONS_DB_KEY, list);
+};
 export const getAnnouncements = (): Announcement[] => safeParseJSON<Announcement[]>(appStorage.getItem(ANNOUNCEMENTS_DB_KEY), []);
-export const saveAnnouncement = (ann: Announcement) => { const list = getAnnouncements(); list.unshift(ann); appStorage.setItem(ANNOUNCEMENTS_DB_KEY, JSON.stringify(list)); syncToSupabase(ANNOUNCEMENTS_DB_KEY, list); };
+export const saveAnnouncement = (ann: Announcement) => {
+  const list = getAnnouncements();
+  list.unshift(ann);
+  addNotification('all', 'New Announcement', ann.title, 'info');
+  appStorage.setItem(ANNOUNCEMENTS_DB_KEY, JSON.stringify(list));
+  syncToSupabase(ANNOUNCEMENTS_DB_KEY, list);
+};
 
 // --- Exam Prep Storage ---
 export interface ExamSession {
@@ -178,6 +210,48 @@ export const saveExamSession = (session: ExamSession) => {
   all.unshift(session);
   appStorage.setItem(EXAM_SESSIONS_KEY, JSON.stringify(all));
   syncToSupabase(EXAM_SESSIONS_KEY, all);
+};
+
+// --- Notifications ---
+export interface NewelNotification {
+  id: string;
+  recipient: string; // username or 'all'
+  title: string;
+  content: string;
+  type: 'info' | 'success' | 'warning';
+  read: boolean;
+  timestamp: number;
+}
+
+export const getNotifications = (username: string): NewelNotification[] => {
+  const all = safeParseJSON<NewelNotification[]>(appStorage.getItem(NOTIFICATIONS_KEY), []);
+  return all.filter(n => n.recipient === username || n.recipient === 'all');
+};
+
+export const addNotification = (recipient: string, title: string, content: string, type: 'info' | 'success' | 'warning' = 'info') => {
+  const all = safeParseJSON<NewelNotification[]>(appStorage.getItem(NOTIFICATIONS_KEY), []);
+  const newNotif: NewelNotification = {
+    id: Date.now().toString(),
+    recipient,
+    title,
+    content,
+    type,
+    read: false,
+    timestamp: Date.now()
+  };
+  all.unshift(newNotif);
+  appStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(all));
+  syncToSupabase(NOTIFICATIONS_KEY, all);
+};
+
+export const markNotificationRead = (id: string) => {
+  const all = safeParseJSON<NewelNotification[]>(appStorage.getItem(NOTIFICATIONS_KEY), []);
+  const idx = all.findIndex(n => n.id === id);
+  if (idx >= 0) {
+    all[idx].read = true;
+    appStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(all));
+    syncToSupabase(NOTIFICATIONS_KEY, all);
+  }
 };
 
 export const calculateUserStats = (user: User) => {

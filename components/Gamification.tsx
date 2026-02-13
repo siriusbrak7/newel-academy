@@ -237,7 +237,7 @@ export const SprintChallenge = ({ user }: { user: User }) => {
     <div className="max-w-4xl mx-auto flex flex-col items-center">
       <div className="text-center mb-8">
         <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-          Cosmic Science Runner
+          Quantum Velocity
         </h2>
         <p className="text-white/40 text-sm">Steer using Left & Right arrows. Collect the correct scientific concepts!</p>
       </div>
@@ -378,7 +378,7 @@ export const LeaderboardView: React.FC = () => {
       <div className="flex justify-center gap-4 mb-8">
         {[
           { id: 'academic', label: 'Academic Progress', icon: <Target size={18} /> },
-          { id: 'challenge', label: 'Sprint Challenge', icon: <Zap size={18} /> },
+          { id: 'challenge', label: 'Quantum Velocity', icon: <Zap size={18} /> },
           { id: 'assessments', label: 'Assessments', icon: <Trophy size={18} /> }
         ].map(tab => (
           <button

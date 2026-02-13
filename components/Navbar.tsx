@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Role } from '../types';
-import { LogOut, BookOpen, LayoutDashboard, Trophy, Settings, Bell, Volume2, VolumeX, LogIn, Menu, X } from 'lucide-react';
+import { LogOut, BookOpen, LayoutDashboard, Trophy, Settings, Bell, Volume2, VolumeX, LogIn, Menu, X, Target } from 'lucide-react';
 
 interface NavbarProps {
   user: User | null;
@@ -12,7 +11,7 @@ interface NavbarProps {
   onOpenAuth: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ user, onLogout, toggleSidebar, notifications, onOpenAuth }) => {
+const Navbar = ({ user, onLogout, toggleSidebar, notifications, onOpenAuth }: NavbarProps) => {
   const [soundOn, setSoundOn] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -20,8 +19,8 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, toggleSidebar, notifica
     <nav className="w-full h-16 bg-slate-900/40 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-4 md:px-8 sticky top-0 z-[90]">
       <div className="flex items-center gap-4">
         {user && (
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-white/60 hover:text-white"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -49,36 +48,39 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, toggleSidebar, notifica
                   <Link to="/courses" className="hover:text-cyan-400 transition-colors flex items-center gap-2 text-white/80">
                     <BookOpen size={16} /> Courses
                   </Link>
+                  <Link to="/exam-prep" className="hover:text-cyan-400 transition-colors flex items-center gap-2 text-white/80">
+                    <Target size={16} /> Exam Prep
+                  </Link>
                   <Link to="/leaderboard" className="hover:text-cyan-400 transition-colors flex items-center gap-2 text-white/80">
                     <Trophy size={16} /> Leaderboard
                   </Link>
                 </>
               )}
             </div>
-            
+
             <div className="flex items-center gap-3 md:gap-5">
               <button onClick={() => setSoundOn(!soundOn)} className="hidden sm:block text-white/60 hover:text-white transition-colors">
-                  {soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                {soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
               </button>
 
               <div className="relative cursor-pointer hover:text-cyan-400 text-white/60 transition-colors">
-                  <Bell size={18} />
-                  {notifications > 0 && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                  )}
+                <Bell size={18} />
+                {notifications > 0 && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                )}
               </div>
 
               <div className="h-8 w-px bg-white/10 hidden sm:block"></div>
 
-              <button 
+              <button
                 onClick={toggleSidebar}
                 className="p-2 hover:bg-white/10 rounded-xl transition-colors text-white/80"
                 title="Settings"
               >
                 <Settings size={20} />
               </button>
-              <button 
-                onClick={onLogout} 
+              <button
+                onClick={onLogout}
                 className="hidden md:flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/30 text-red-400 rounded-xl transition-all text-sm font-bold border border-red-500/20"
               >
                 <LogOut size={16} />
@@ -87,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, toggleSidebar, notifica
             </div>
           </>
         ) : (
-          <button 
+          <button
             onClick={onOpenAuth}
             className="flex items-center gap-2 px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl transition-all text-sm font-bold shadow-lg shadow-cyan-500/20"
           >
@@ -107,13 +109,16 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, toggleSidebar, notifica
               <Link to="/courses" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 text-white p-3 rounded-xl bg-white/5 font-bold">
                 <BookOpen size={20} /> Courses
               </Link>
+              <Link to="/exam-prep" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 text-white p-3 rounded-xl bg-white/5 font-bold">
+                <Target size={20} /> Exam Prep
+              </Link>
               <Link to="/leaderboard" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 text-white p-3 rounded-xl bg-white/5 font-bold">
                 <Trophy size={20} /> Leaderboard
               </Link>
             </>
           )}
-          <button 
-            onClick={() => { setMobileMenuOpen(false); onLogout(); }} 
+          <button
+            onClick={() => { setMobileMenuOpen(false); onLogout(); }}
             className="flex items-center gap-4 text-red-400 p-3 rounded-xl bg-red-500/10 font-bold mt-4"
           >
             <LogOut size={20} /> Logout
