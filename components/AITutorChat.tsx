@@ -11,7 +11,7 @@ const AITutorChat: React.FC<{ context?: string }> = ({ context }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: `Hi! I'm your AI Science Tutor. I see you're studying ${context?.split('\n')[1]?.replace('Topic: ', '') || 'Science'}. Ask me anything!` }
+    { role: 'model', text: `Hi! I'm Newel, your AI Science Tutor. I see you're studying ${context?.split('\n')[1]?.replace('Topic: ', '') || 'Science'}. Ask me anything!` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -86,7 +86,7 @@ const AITutorChat: React.FC<{ context?: string }> = ({ context }) => {
             <Bot className="text-cyan-400" size={18} />
           </div>
           <div>
-            <h3 className="font-bold text-white text-sm">AI Science Tutor</h3>
+            <h3 className="font-bold text-white text-sm">Newel (AI Science Tutor)</h3>
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-[10px] text-white/40 uppercase tracking-tighter">Powered by Gemini 2.5</span>
@@ -117,8 +117,8 @@ const AITutorChat: React.FC<{ context?: string }> = ({ context }) => {
             )}
             <div
               className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${m.role === 'user'
-                  ? 'bg-gradient-to-br from-purple-600 to-indigo-700 text-white rounded-tr-none shadow-lg'
-                  : 'bg-white/5 text-white/90 rounded-tl-none border border-white/10 glass'
+                ? 'bg-gradient-to-br from-purple-600 to-indigo-700 text-white rounded-tr-none shadow-lg'
+                : 'bg-white/5 text-white/90 rounded-tl-none border border-white/10 glass'
                 }`}
             >
               {m.role === 'model' ? (

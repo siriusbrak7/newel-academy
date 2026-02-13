@@ -75,7 +75,7 @@ const TopicDetail = ({ user }: { user: User }) => {
                         onClick={() => setShowAITutor(true)}
                         className="flex items-center gap-2 bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 px-4 py-2 rounded-xl border border-purple-500/30 transition-all shadow-lg shadow-purple-500/10"
                     >
-                        <MessageSquare size={18} /> Ask AI Tutor
+                        <MessageSquare size={18} /> Ask Newel
                     </button>
                 </div>
                 <p className="text-white/70 text-lg leading-relaxed">{topic.description}</p>
@@ -206,7 +206,7 @@ const TopicDetail = ({ user }: { user: User }) => {
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400"><MessageSquare /></div>
                                 <div>
-                                    <h4 className="font-bold text-white">AI Tutor</h4>
+                                    <h4 className="font-bold text-white">Newel (AI Science Mentor)</h4>
                                     <p className="text-[10px] text-white/40 uppercase">Topic Context: {topic.title}</p>
                                 </div>
                             </div>

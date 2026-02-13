@@ -201,12 +201,7 @@ const AppContent: React.FC = () => {
                       </div>
 
                       <div className="flex items-center justify-center lg:justify-start gap-4 pt-8 border-t border-white/5">
-                        <div className="flex -space-x-3">
-                          {[1, 2, 3, 4].map(i => (
-                            <img key={i} className="w-10 h-10 rounded-full border-2 border-slate-900" src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Student" />
-                          ))}
-                        </div>
-                        <p className="text-xs md:text-sm text-white/40"><span className="text-green-400 font-bold">2,400+</span> students are leveling up their science grades today.</p>
+                        <p className="text-xs md:text-sm text-white/40">Join students who are leveling up their science grades today.</p>
                       </div>
                     </div>
                   </div>
