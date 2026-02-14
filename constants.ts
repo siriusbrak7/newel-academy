@@ -58,7 +58,13 @@ export const QUESTION_BANK: Record<string, Question[]> = {
     { id: 'b6', topic: 'Human Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "Where does most nutrient absorption occur in the digestive system?", options: ["Stomach", "Large intestine", "Small intestine", "Esophagus"], correctAnswer: "Small intestine" },
     { id: 'b7', topic: 'Microbiology', difficulty: 'IGCSE', type: 'MCQ', text: "Which of these is a prokaryotic organism?", options: ["Yeast", "Amoeba", "Bacteria", "Mushroom"], correctAnswer: "Bacteria" },
     { id: 'b8', topic: 'Plant Biology', difficulty: 'IGCSE', type: 'MCQ', text: "What is the function of xylem in plants?", options: ["Sugar transport", "Water transport", "Defense", "Support"], correctAnswer: "Water transport" },
-    { id: 'b9', topic: 'Animal Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "What gas do animals primarily exhale as a waste product of respiration?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correctAnswer: "Carbon Dioxide" }
+    { id: 'b9', topic: 'Animal Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "What gas do animals primarily exhale as a waste product of respiration?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correctAnswer: "Carbon Dioxide" },
+    { id: 'b10', topic: 'Genetics', difficulty: 'IGCSE', type: 'MCQ', text: "Which base pairs with Adenine in DNA?", options: ["Cytosine", "Guanine", "Thymine", "Uracil"], correctAnswer: "Thymine" },
+    { id: 'b11', topic: 'Ecology', difficulty: 'IGCSE', type: 'MCQ', text: "What do we call an organism that eats only plants?", options: ["Carnivore", "Herbivore", "Omnivore", "Detritivore"], correctAnswer: "Herbivore" },
+    { id: 'b12', topic: 'Cell Biology', difficulty: 'IGCSE', type: 'MCQ', text: "Which process moves substances against a concentration gradient?", options: ["Diffusion", "Osmosis", "Active Transport", "Filtration"], correctAnswer: "Active Transport" },
+    { id: 'b13', topic: 'Human Physiology', difficulty: 'IGCSE', type: 'MCQ', text: "Which blood component creates clots?", options: ["Red Blood Cells", "White Blood Cells", "Plasma", "Platelets"], correctAnswer: "Platelets" },
+    { id: 'b14', topic: 'Plant Biology', difficulty: 'IGCSE', type: 'MCQ', text: "Through which part of the leaf does gas exchange primarily occur?", options: ["Cuticle", "Stomata", "Vein", "Mesophyll"], correctAnswer: "Stomata" },
+    { id: 'b15', topic: 'Molecular Biology', difficulty: 'IGCSE', type: 'MCQ', text: "Enzymes are biological examples of what?", options: ["Catalysts", "Solvents", "Substrates", "Products"], correctAnswer: "Catalysts" }
   ],
   'Physics': [
     { id: 'p1', topic: 'Mechanics', difficulty: 'IGCSE', type: 'MCQ', text: "What is the SI unit of force?", options: ["Joule", "Pascal", "Newton", "Watt"], correctAnswer: "Newton" },
@@ -69,7 +75,13 @@ export const QUESTION_BANK: Record<string, Question[]> = {
     { id: 'p6', topic: 'Atomic Physics', difficulty: 'IGCSE', type: 'MCQ', text: "What particles are found in the nucleus of an atom?", options: ["Electrons only", "Protons and electrons", "Protons and neutrons", "Neutrons and electrons"], correctAnswer: "Protons and neutrons" },
     { id: 'p7', topic: 'Mechanics', difficulty: 'IGCSE', type: 'MCQ', text: "Work done is equal to force multiplied by...", options: ["Time", "Distance", "Mass", "Acceleration"], correctAnswer: "Distance" },
     { id: 'p8', topic: 'Waves', difficulty: 'IGCSE', type: 'MCQ', text: "The pitch of a sound depends on its...", options: ["Amplitude", "Velocity", "Frequency", "Wavelength"], correctAnswer: "Frequency" },
-    { id: 'p9', topic: 'Electricity', difficulty: 'IGCSE', type: 'MCQ', text: "Which material is the best electrical conductor?", options: ["Glass", "Copper", "Rubber", "Wood"], correctAnswer: "Copper" }
+    { id: 'p9', topic: 'Electricity', difficulty: 'IGCSE', type: 'MCQ', text: "Which material is the best electrical conductor?", options: ["Glass", "Copper", "Rubber", "Wood"], correctAnswer: "Copper" },
+    { id: 'p10', topic: 'Mechanics', difficulty: 'IGCSE', type: 'MCQ', text: "Which of these is a scalar quantity?", options: ["Velocity", "Force", "Speed", "Displacement"], correctAnswer: "Speed" },
+    { id: 'p11', topic: 'Energy Production', difficulty: 'IGCSE', type: 'MCQ', text: "Which energy source is non-renewable?", options: ["Solar", "Wind", "Coal", "Hydroelectric"], correctAnswer: "Coal" },
+    { id: 'p12', topic: 'Atomic Physics', difficulty: 'IGCSE', type: 'MCQ', text: "What is the term for atoms of the same element with different numbers of neutrons?", options: ["Isotopes", "Ions", "Isomers", "Allotropes"], correctAnswer: "Isotopes" },
+    { id: 'p13', topic: 'Thermal Physics', difficulty: 'IGCSE', type: 'MCQ', text: "At what temperature does water boil at standard pressure?", options: ["0°C", "50°C", "100°C", "273 K"], correctAnswer: "100°C" },
+    { id: 'p14', topic: 'Waves', difficulty: 'IGCSE', type: 'MCQ', text: "What phenomenon causes a pencil to look bent in water?", options: ["Reflection", "Refraction", "Diffraction", "Interference"], correctAnswer: "Refraction" },
+    { id: 'p15', topic: 'Electricity', difficulty: 'IGCSE', type: 'MCQ', text: "In a series circuit, what stays the same across all components?", options: ["Voltage", "Current", "Resistance", "Power"], correctAnswer: "Current" }
   ],
   'Chemistry': [
     { id: 'c1', topic: 'Atomic Structure', difficulty: 'IGCSE', type: 'MCQ', text: "What is the atomic number of an element based on?", options: ["Number of neutrons", "Number of protons", "Total mass", "Number of shells"], correctAnswer: "Number of protons" },
@@ -80,7 +92,13 @@ export const QUESTION_BANK: Record<string, Question[]> = {
     { id: 'c6', topic: 'Organic Chemistry', difficulty: 'IGCSE', type: 'MCQ', text: "What is the general formula for Alkanes?", options: ["CnH2n", "CnH2n-2", "CnH2n+2", "CnHn"], correctAnswer: "CnH2n+2" },
     { id: 'c7', topic: 'Atomic Structure', difficulty: 'IGCSE', type: 'MCQ', text: "What charge does an electron carry?", options: ["Positive", "Negative", "Neutral", "Double positive"], correctAnswer: "Negative" },
     { id: 'c8', topic: 'Periodic Table', difficulty: 'IGCSE', type: 'MCQ', text: "Which element is a Liquid at room temperature?", options: ["Iron", "Bromine", "Oxygen", "Carbon"], correctAnswer: "Bromine" },
-    { id: 'c9', topic: 'Kinetics', difficulty: 'IGCSE', type: 'MCQ', text: "A substance that speeds up a reaction without being used up is a...", options: ["Reactant", "Product", "Catalyst", "Solvent"], correctAnswer: "Catalyst" }
+    { id: 'c9', topic: 'Kinetics', difficulty: 'IGCSE', type: 'MCQ', text: "A substance that speeds up a reaction without being used up is a...", options: ["Reactant", "Product", "Catalyst", "Solvent"], correctAnswer: "Catalyst" },
+    { id: 'c10', topic: 'Stoichiometric Relationships', difficulty: 'IGCSE', type: 'MCQ', text: "What is the Avogadro constant primarily associated with?", options: ["Moles", "Mass", "Volume", "Density"], correctAnswer: "Moles" },
+    { id: 'c11', topic: 'Acids and Bases', difficulty: 'IGCSE', type: 'MCQ', text: "Which acid is found in stomach acid?", options: ["Sulfuric Acid", "Nitric Acid", "Hydrochloric Acid", "Acetic Acid"], correctAnswer: "Hydrochloric Acid" },
+    { id: 'c12', topic: 'Organic Chemistry', difficulty: 'IGCSE', type: 'MCQ', text: "Ethene belongs to which homologous series?", options: ["Alkanes", "Alkenes", "Alcohols", "Carboxylic Acids"], correctAnswer: "Alkenes" },
+    { id: 'c13', topic: 'Redox Processes', difficulty: 'IGCSE', type: 'MCQ', text: "Oxidation is the...", options: ["Gain of electrons", "Loss of electrons", "Gain of hydrogen", "Loss of oxygen"], correctAnswer: "Loss of electrons" },
+    { id: 'c14', topic: 'Atmosphere', difficulty: 'IGCSE', type: 'MCQ', text: "Which gas makes up approximately 78% of the Earth's atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Argon"], correctAnswer: "Nitrogen" },
+    { id: 'c15', topic: 'Bonding', difficulty: 'IGCSE', type: 'MCQ', text: "Diamond and Graphite are allotropes of which element?", options: ["Silicon", "Carbon", "Sulfur", "Oxygen"], correctAnswer: "Carbon" }
   ]
 };
 

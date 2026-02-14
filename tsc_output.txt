@@ -1,0 +1,2 @@
+components/Confetti.tsx(2,8): error TS1259: Module '"C:/Users/bbrak/OneDrive/Desktop/Newel Academy/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+components/Gamification.tsx(1,8): error TS1259: Module '"C:/Users/bbrak/OneDrive/Desktop/Newel Academy/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
